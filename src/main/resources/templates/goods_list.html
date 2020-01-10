@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+		<!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+		<meta name="renderer" content="webkit">
+		<!--国产浏览器高速模式-->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>earun</title>
+
+		<!-- 公共样式 开始 -->
+		<link rel="stylesheet" type="text/css" href="css/base.css">
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css">
+		<script type="text/javascript" src="framework/jquery-1.11.3.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+		<script type="text/javascript" src="layui/layui.js"></script>
+		<!-- 滚动条插件 -->
+		<link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css">
+		<script src="framework/jquery-ui-1.10.4.min.js"></script>
+		<script src="framework/jquery.mousewheel.min.js"></script>
+		<script src="framework/jquery.mCustomScrollbar.min.js"></script>
+		<script src="framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+		<!-- 公共样式 结束 -->
+		
+		<style>
+			.layui-table img {
+			    max-width: none;
+			}
+
+			.button { /* 按钮美化 */
+
+				width: 80px; /* 宽度 */
+				height: 40px;
+				border-width: 0px; /* 边框宽度 */
+				border-radius: 10px; /* 边框半径 */
+				background: #1E90FF; /* 背景颜色 */
+				cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+				outline: none; /* 不显示轮廓线 */
+				font-family: Microsoft YaHei; /* 设置字体 */
+				color: white; /* 字体颜色 */
+				font-size: 17px;
+
+			}
+			.button:hover { /* 鼠标移入按钮范围时改变颜色 */
+				background: #5599FF;
+			}
+			.input{
+				border: 1px solid #ccc;
+				height: 30px; /* 高度 */
+				width: 300px;
+				border-radius: 10px;
+				padding-left:5px;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+				box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+				-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+				-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+				transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+			}
+			.input:focus{
+				border-color: #66afe9;
+				outline: 0;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+				box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="cBody">
+			<div class="console">
+
+<!--				<script>-->
+<!--					layui.use('form', function() {-->
+<!--						var form = layui.form;-->
+<!--				-->
+<!--						//监听提交-->
+<!--						form.on('submit(formDemo)', function(data) {-->
+<!--							layer.msg(JSON.stringify(data.field));-->
+<!--							return false;-->
+<!--						});-->
+<!--					});-->
+<!--				</script>-->
+			</div>
+			<form th:action="@{/searchGoodsList}" method="post">
+				<input type="text" name="easy_write" required="required" class="input">
+				<button type="submit" class="button">搜索</button></form>
+			<table class="layui-table">
+				<thead>
+					<tr>
+						<th>商品ID</th>
+						<th>商品名称</th>
+						<th>商品价格</th>
+						<th>商品单位</th>
+						<th>权重</th>
+						<th>商品分类</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+				<div th:each="goods : ${goodsList}">
+					<tr>
+						<td><span th:text="${goods.id}"></span></td>
+						<td><span th:text="${goods.name}"></span></td>
+<!--						<td><img src="images/goodsPIC1.png" width="20" height="20" onmouseenter="imgBig(this)" onmouseleave="imgSmall(this)"/></td>-->
+						<td><span th:text="${goods.price}"></span></td>
+						<td><span th:text="${goods.unit}"></span></td>
+						<td><span th:text="${goods.stock}"></span></td>
+						<td><span th:text="${goods.categories}"></span></td>
+						<td>
+							<a class="layui-btn layui-btn-xs" th:href="@{updateGoodsinfoPage(goodsId=${goods.id})}">修改</a>
+							<a class="layui-btn layui-btn-xs" th:href="@{deleteGoods(goodsId=${goods.id})}" onClick="return confirm('确定删除商品?');">删除</a>
+						</td>
+					</tr>
+				</div>
+				</tbody>
+			</table>
+			
+			<!-- layUI 分页模块 -->
+			<div id="pages"></div>
+		</div>
+	</body>
+
+</html>

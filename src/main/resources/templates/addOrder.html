@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+    <!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+    <meta name="renderer" content="webkit">
+    <!--国产浏览器高速模式-->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>earun</title>
+
+    <!-- 公共样式 开始 -->
+    <link rel="stylesheet" type="text/css" href="css/base.css">
+    <link rel="stylesheet" type="text/css" href="css/iconfont.css">
+    <script type="text/javascript" src="framework/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+    <script type="text/javascript" src="layui/layui.js"></script>
+    <!-- 滚动条插件 -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css">
+    <script src="framework/jquery-ui-1.10.4.min.js"></script>
+    <script src="framework/jquery.mousewheel.min.js"></script>
+    <script src="framework/jquery.mCustomScrollbar.min.js"></script>
+    <script src="framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+    <!-- 公共样式 结束 -->
+
+    <style>
+        .searchResult{
+            position: absolute;
+            top: 50px;
+            left: 15px;
+            z-index: 10;
+            background-color: #FFF;
+            width: 100px;
+            border: 1px solid #d2d2d2;
+            border-radius: 2px;
+        }
+        .searchResult li{
+            padding: 0 10px;
+            line-height: 36px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+        .searchResult li:hover{
+            background-color: #eee;
+        }
+        .button { /* 按钮美化 */
+
+            width: 80px; /* 宽度 */
+            height: 40px;
+            border-width: 0px; /* 边框宽度 */
+            border-radius: 10px; /* 边框半径 */
+            background: #1E90FF; /* 背景颜色 */
+            cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+            outline: none; /* 不显示轮廓线 */
+            font-family: Microsoft YaHei; /* 设置字体 */
+            color: white; /* 字体颜色 */
+            font-size: 17px;
+
+        }
+        .button:hover { /* 鼠标移入按钮范围时改变颜色 */
+            background: #5599FF;
+        }
+        .input{
+            border: 1px solid #ccc;
+            height: 30px; /* 高度 */
+            width: 400px;
+            border-radius: 10px;
+            padding-left:5px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+        }
+        .input:focus{
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+        }
+    </style>
+</head>
+
+<body>
+<!--<a href="javascript:;" onClick="javascript :history.back();"><button class="button">返回</button></a>-->
+<!--<a th:href="@{/outPrintData(orderId=${orderInfo.id})}"><button class="button">前往打印</button></a>-->
+
+<div class="cBody" style="width: 100%"><table><tr><td valign="top">
+    <a href="javascript:;" onClick="javascript :history.back();"><button class="button">返回</button></a>
+    <a th:href="@{/outPrintData(orderId=${orderInfo.id})}"><button class="button">前往打印</button></a>
+<!--    <div class="layui-row" id="dayindaju1">-->
+<!--        <table class="layui-table printTable">-->
+<!--            <tbody>-->
+<!--            <tr>-->
+<!--                <td class="printName" colspan="8">出货单</td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td class="printDis" colspan="8">-->
+<!--                    <span th:text="${orderInfo.createdAt}"></span>-->
+<!--                    <span class="right" th:text="订单编号：20190810+${orderInfo.id}"></span>-->
+<!--                    <span th:text="${orderInfo.customer}"></span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <th width="8%" class="textCenter">序号</th>-->
+<!--                <th width="20%">商品名称</th>-->
+<!--                <th width="10%" class="textCenter">单位</th>-->
+<!--                <th width="10%" class="textCenter">件数</th>-->
+<!--                <th width="10%" class="textCenter">数量</th>-->
+<!--                <th width="10%" class="textCenter">单价</th>-->
+<!--                <th width="10%" class="textCenter">金额</th>-->
+<!--                <th>数据备注</th>-->
+<!--            </tr>-->
+<!--            <tr th:each="order:${orderList}">-->
+<!--                <td class="textCenter"><span th:text="${orderStat.index+1}"></span></td>-->
+<!--                <td><span th:text="${order.name}"></span></td>-->
+<!--                <td class="textCenter"><span th:text="${order.unit}"></span></td>-->
+<!--                <td class="textCenter"><span th:text="${order.box_number}"></span></td>-->
+<!--                <td class="textCenter"><span th:text="${order.number}"></span></td>-->
+<!--                <td class="textCenter"><span th:text="${order.price}"></span></td>-->
+<!--                <td class="textCenter"><span th:text="${order.total_price}"></span></td>-->
+<!--                <td>单品备注<button><a class="layui-btn layui-btn-xs" th:href="@{/deleteOrderGoods(orderId=${orderId},orderGoodsId=${order.id})}">删除</a></button></td>-->
+<!--            </tr>-->
+<!--            <tr>-->
+<!--                <td class="printOperator" colspan="8">-->
+<!--                    <span th:text="总价：+${orderInfo.totalPrice}"></span>-->
+<!--                    <span class="right">打印日期：2018-03-10 10:24:03</span>-->
+<!--                </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--        </table>-->
+<!--    </div>-->
+    <form th:action="@{/searchGoods(orderId=${orderId})}" method="post">
+            <input type="text" name="easy_write" required="required" class="input">
+            <button type="submit" class="button">搜索商品</button></form>
+    <a th:href="@{/searchGoods(orderId=${orderId},easy_write='豆')}"><button type="button" class="button">豆</button></a>
+    <a th:href="@{/searchGoods(orderId=${orderId},easy_write='竹')}"><button type="button" class="button">腐竹枝竹</button></a>
+    <a th:href="@{/searchGoods(orderId=${orderId},easy_write='椒')}"><button type="button" class="button">椒</button></a>
+    <a th:href="@{/searchGoods(orderId=${orderId},easy_write='菇')}"><button type="button" class="button">菇</button></a>
+    <a th:href="@{/searchGoods(orderId=${orderId},easy_write='枣')}"><button type="button" class="button">枣</button></a>
+    <table id="customList1"  class="layui-table">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>商品名称</th>
+            <th>商品单价</th>
+            <th>商品单位</th>
+            <th>权重</th>
+            <th>商品规格</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="search:${searchList}" >
+            <td><span th:text="${searchStat.index+1}"></span></td>
+            <td><span th:text="${search.name}"></span></td>
+            <td><span th:text="${search.price}"></span></td>
+            <td><span th:text="${search.unit}"></span></td>
+            <td><span th:text="${search.stock}"></span></td>
+            <td><span th:text="${search.boxSize}"></span></td>
+            <td>
+                <a class="layui-btn layui-btn-xs" th:onclick="updateBut([[${search.id}]],[[${orderId}]])">添加</a>
+<!--                <a class="layui-btn layui-btn-xs" onclick="delCustomList(this)">删除</a>-->
+            </td>
+        </tr>
+        </tbody>
+    </table></td><td>
+        <table  class="layui-table printTable">
+            <tbody>
+            <tr>
+                <td class="printName" colspan="8"><span th:text="${orderInfo.customer}"></span></td>
+            </tr>
+<!--            <tr>-->
+<!--                <td class="printDis" colspan="8">-->
+<!--                    <span th:text="${orderInfo.createdAt}"></span>-->
+<!--                    <span class="right" th:text="订单编号：20190810+${orderInfo.id}"></span>-->
+<!--                    <span th:text="${orderInfo.customer}"></span>-->
+<!--                </td>-->
+<!--            </tr>-->
+            <tr>
+                <th width="8%" class="textCenter">序号</th>
+                <th width="20%">商品名称</th>
+                <th width="10%" class="textCenter">单位</th>
+                <th width="10%" class="textCenter">件数</th>
+                <th width="10%" class="textCenter">数量</th>
+                <th width="10%" class="textCenter">单价</th>
+                <th width="10%" class="textCenter">金额</th>
+                <th>数据备注</th>
+            </tr>
+            <tr th:each="order:${orderList}">
+                <td class="textCenter"><span th:text="${orderStat.index+1}"></span></td>
+                <td><span th:text="${order.name}"></span></td>
+                <td class="textCenter"><span th:text="${order.unit}"></span></td>
+                <td class="textCenter"><span th:text="${order.box_number}"></span></td>
+                <td class="textCenter"><span th:text="${order.number}"></span></td>
+                <td class="textCenter"><span th:text="${order.price}"></span></td>
+                <td class="textCenter"><span th:text="${order.total_price}"></span></td>
+                <td><button><a class="layui-btn layui-btn-xs" th:href="@{/deleteOrderGoods(orderId=${orderId},orderGoodsId=${order.id})}">删除</a></button></td>
+            </tr>
+            <tr>
+                <td class="printOperator" colspan="8">
+                    <span th:text="总价：+${orderInfo.totalPrice}"></span>
+                    <span class="right">打印日期：2018-03-10 10:24:03</span>
+                </td>
+            </tr>
+            </tbody>
+        </table></td></tr></table>
+<!--    <select id="tableType" name="tableType" onchange="getTableType(this.id);">-->
+<!--        <option value="" style="display: none"></option>-->
+<!--        <option value="1">年报</option>-->
+<!--        <option value="2">半年报</option>-->
+<!--        <option value="3">季报</option>-->
+<!--        <option value="4">月报</option>-->
+<!--    </select>-->
+<!--    <select id="select2" name="tableType" onchange="getTableType(this.id);">-->
+<!--        <option value="1">1</option>-->
+<!--        <option value="2">2</option>-->
+<!--        <option value="3">3</option>-->
+<!--        <option value="4">4</option>-->
+<!--    </select>-->
+
+</div>
+<script>
+    //根据2018.03.01日 张家港客户需求改版的要求，在新的后台框架中提供以下功能
+    //此功能只适用与提前加载后，进行搜索；
+
+    //新增
+    // function addCustomList(id){
+    //     var str = '<tr>'+
+    //         '<td>'+
+    //         '<input type="tel" name="phone" lay-verify="required" autocomplete="off" class="layui-input" onkeyup="seachKeyup(this)">'+
+    //         '</td>'+
+    //         '<td>'+
+    //         '<input type="tel" name="phone" lay-verify="required" autocomplete="off" class="layui-input">'+
+    //         '</td>'+
+    //         '<td>'+
+    //         '<input type="tel" name="phone" lay-verify="required" autocomplete="off" class="layui-input">'+
+    //         '</td>'+
+    //         '<td>'+
+    //         '<input type="tel" name="phone" lay-verify="required" autocomplete="off" class="layui-input">'+
+    //         '</td>'+
+    //         '<td>'+
+    //         '<input type="tel" name="phone" lay-verify="required" autocomplete="off" class="layui-input">'+
+    //         '</td>'+
+    //         '<td>'+
+    //         '<input type="tel" name="phone" lay-verify="required" autocomplete="off" class="layui-input">'+
+    //         '</td>'+
+    //         '<td>'+
+    //         '<a class="layui-btn layui-btn-xs" onclick="delCustomList(this)">删除</a>'+
+    //         '</td>'+
+    //         '</tr>';
+    //     $("#"+id).append(str);
+    //
+    //     //重新初始化Iframe的高度
+    //     cframeInit();
+    // }
+
+    //搜索按钮弹起
+    // function seachKeyup(_this){
+    //     var w = $(_this).width()+10;
+    //     $(_this).siblings().remove();
+    //
+    //     var str = '<ul class="searchResult" style="width: '+w+'px">'+
+    //         '<li onclick="seachChoose(this)">测试11</li>'+
+    //         '<li onclick="seachChoose(this)">测试11</li>'+
+    //         '<li onclick="seachChoose(this)">测试11</li>'+
+    //         '<li onclick="seachChoose(this)">测试11</li>'+
+    //         '</ul>';
+    //     $(_this).after(str);
+    //
+    //     //点击其他地方搜索下拉框消失
+    //     $(document).click(function(){
+    //         $(".searchResult").remove();
+    //     });
+    //
+    //     //点击input也消失
+    //     $(_this).click(function(){
+    //         $(".searchResult").remove();
+    //     });
+    // }
+    // //搜索下拉选项选中
+    // function seachChoose(_this){
+    //     $(_this).parent().siblings("input").val($(_this).text());
+    // }
+
+    //删除
+    function delCustomList(_this){
+        layui.use(['form','laydate'], function() {
+            layer.confirm('确定要删除么？', {
+                btn: ['确定', '取消'] //按钮
+            }, function() {
+                $(_this).parent().parent().remove();
+                layer.msg('删除成功', {
+                    icon: 1
+                });
+            }, function() {
+                layer.msg('取消删除', {
+                    time: 2000 //20s后自动关闭
+                });
+            });
+        });
+    }
+    // function getTableType(id) {
+    //     var i=document.getElementById(id).value;
+    //     console.log(i);
+    //     if (i==1){
+    //         document.getElementById('select2').innerHTML = "";
+    //         var html="<option value=\"1\">q</option>\n" +
+    //             "        <option value=\"2\">w</option>\n" +
+    //             "        <option value=\"3\">w</option>\n" +
+    //             "        <option value=\"4\">e</option>"
+    //         document.getElementById('select2').innerHTML = html;
+    //
+    //
+    //     }
+    //
+    // }
+
+
+    var updateFrame = null;
+    function updateBut(id,orderId){
+        layui.use('layer', function() {
+            var layer = layui.layer;
+
+            //iframe层-父子操作
+            updateFrame = layer.open({
+                title: "商品信息修改",
+                type: 2,
+                area: ['30%', '60%'],
+                scrollbar: false,	//默认：true,默认允许浏览器滚动，如果设定scrollbar: false，则屏蔽
+                maxmin: true,
+                content: 'goods_update?gId='+id+'&orderId='+orderId
+            });
+        });
+
+    }
+</script>
+</body>
+
+</html>

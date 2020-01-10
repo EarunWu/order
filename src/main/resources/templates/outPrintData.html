@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+		<!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+		<meta name="renderer" content="webkit">
+		<!--国产浏览器高速模式-->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>吴记</title>
+
+		<!-- 公共样式 开始 -->
+		<link rel="stylesheet" type="text/css" href="css/base.css">
+		<link rel="stylesheet" type="text/css" href="css/iconfont.css">
+		<script type="text/javascript" src="framework/jquery-1.11.3.min.js"></script>
+		<script type="text/javascript" src="js/base.js"></script>
+		<link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+		<script type="text/javascript" src="layui/layui.js"></script>
+		<!-- 滚动条插件 -->
+		<link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css">
+		<script src="framework/jquery-ui-1.10.4.min.js"></script>
+		<script src="framework/jquery.mousewheel.min.js"></script>
+		<script src="framework/jquery.mCustomScrollbar.min.js"></script>
+		<script src="framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+		<script src="framework/printThis.js"></script>
+		<!-- 公共样式 结束 -->
+		<style>
+			.dayinyong{
+				color: #000000;
+				font-family: 黑体;
+			}
+		</style>
+
+	</head>
+
+	<body>
+		<div class="cBody">
+			<div class="console">
+				<div class="layui-form-item">
+					<a class="layui-btn layui-btn-sm layui-btn-normal" href="javascript:;" onClick="javascript :history.back();">返回</a>
+					<a class="layui-btn layui-btn-sm layui-btn-normal" onclick="printdiv('dayindaju1')">打印</a>
+<!--					<a class="layui-btn layui-btn-sm layui-btn-normal" onclick="printTable('dayindaju1')">打印</a>-->
+				</div>
+			</div>
+			
+			<div class="layui-row" id="dayindaju1">
+				<table class="layui-table printTable">
+					<tbody>
+					<tr>
+						<td class="printName" colspan="7">XXXXX商行</td>
+					</tr>
+					<tr>
+						<td class="printDis" colspan="7">
+							<span>地址：XXXXXXXXXXXXX</span>
+<!--							<span class="right" th:text="订单编号：20190810+${orderInfo.id}"></span>-->
+							<span>联系电话：XXXXXX</span>
+							<span th:text="'顾客：'+${orderInfo.customer}"></span>
+						</td>
+					</tr>
+					<tr>
+						<th style="color: #000000">序号</th>
+						<th style="color: #000000">名称</th>
+						<th style="color: #000000">单位</th>
+						<th style="color: #000000">件数</th>
+						<th style="color: #000000">数量</th>
+						<th style="color: #000000">单价</th>
+						<th style="color: #000000">金额</th>
+					</tr>
+					<tr th:each="order:${orderList}">
+						<td style="color: #000000"><span th:text="${orderStat.index+1}"></span></td>
+						<td style="color: #000000"><span th:text="${order.name}"></span></td>
+						<td style="color: #000000"><span th:text="${order.unit}"></span></td>
+						<td style="color: #000000"><span th:text="${order.box_number}"></span></td>
+						<td style="color: #000000"><span th:text="${order.number}"></span></td>
+						<td style="color: #000000"><span th:text="${order.price}"></span></td>
+						<td style="color: #000000"><span th:text="${order.total_price}"></span></td>
+					</tr>
+					<tr>
+						<td class="printOperator" colspan="7">
+							<span id="time"></span>
+							<span th:text="总价：+${orderInfo.totalPrice}" class="right"></span>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script>
+			$(function(){
+				//时间计时器
+				setInterval(function(){
+					$("#time").html('打印时间：'+getDate());
+				},500);
+			})
+		</script>
+		<script>
+			//打印方法
+		    function printTable(id){
+		    	$('#'+id).printThis({ importCss: true, importStyle: true });
+		    }
+			function printdiv(printpage) {
+				var headhtml = "<html><head><title></title></head><body>";
+				var foothtml = "</body>";
+				// 获取div中的html内容
+				var newhtml = document.all.item(printpage).innerHTML;
+				// 获取div中的html内容，jquery写法如下
+				// var newhtml= $("#" + printpage).html();
+
+				// 获取原来的窗口界面body的html内容，并保存起来
+				var oldhtml = document.body.innerHTML;
+
+				// 给窗口界面重新赋值，赋自己拼接起来的html内容
+				document.body.innerHTML = headhtml + newhtml + foothtml;
+				// 调用window.print方法打印新窗口
+				window.print();
+
+				// 将原来窗口body的html值回填展示
+				document.body.innerHTML = oldhtml;
+				return false;
+			}
+		</script>
+	</body>
+
+</html>

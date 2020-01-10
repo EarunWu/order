@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+	  xmlns:th="http://www.thymeleaf.org">
+
+	<head>
+
+		<title>earun</title>
+
+
+		
+		<style>
+			.button { /* 按钮美化 */
+
+				width: 80px; /* 宽度 */
+				height: 40px;
+				border-width: 0px; /* 边框宽度 */
+				border-radius: 10px; /* 边框半径 */
+				background: #1E90FF; /* 背景颜色 */
+				cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+				outline: none; /* 不显示轮廓线 */
+				font-family: Microsoft YaHei; /* 设置字体 */
+				color: white; /* 字体颜色 */
+				font-size: 17px;
+
+			}
+			.button:hover { /* 鼠标移入按钮范围时改变颜色 */
+				background: #5599FF;
+			}
+			.input{
+				border: 1px solid #ccc;
+				height: 30px; /* 高度 */
+				width: 200px;
+				border-radius: 10px;
+				padding-left:5px;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+				box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+				-webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+				-o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+				transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+			}
+			.input:focus{
+				border-color: #66afe9;
+				outline: 0;
+				-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+				box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+			}
+		</style>
+
+	</head>
+
+	<body>
+	<div class="cBody">
+		<form id="addForm">
+			<table>
+				<tr align="center">
+					<td>
+						商品名</td><td><span th:text="${goods.name}"></span>
+				</td>
+				</tr>
+				<tr align="center">
+					<td>
+						单位</td><td>
+					<span th:text="${goods.unit}"></span>
+				</td>
+				</tr>
+				<tr align="center">
+					<td>
+						规格/件</td><td><span th:text="${goods.boxSize}"></span><span th:text="${goods.unit}"></span>
+				</td>
+				</tr>
+<!--				<tr>-->
+<!--					<td>-->
+<!--						库存</td><td>-->
+<!--					<span th:text="${goods.stock}"></span><span th:text="${goods.unit}"></span>-->
+<!--						</td>-->
+<!--				</tr>-->
+				<tr align="center">
+					<td>
+						单价</td><td><input id="price" type="text" name="price" required="required" lay-verify="required|number" autocomplete="off" class="input" th:value="${goods.price}" onkeyup="inputPrice(this)">
+				</td>
+					<td><button type="button" onclick="changePrice(1)">+</button>
+						<button type="button" onclick="changePrice(0)">-</button>
+						<a th:href="@{javascript:savePrice(}+@{${goods.id}}+@{);}">保存</a></td>
+				</tr>
+				<tr>
+					<td align="center">
+						件数</td><td><input id="boxNumber" type="text" name="boxNumber" required="required" autocomplete="off" class="input" value="0" th:onkeyup="goodsNumber(this,[[${goods.boxSize}]])">
+				</td>
+					<td align="left">
+						<button type="button" th:onclick="addBoxNumber(1,[[${goods.boxSize}]])">1</button>
+						<button type="button" th:onclick="addBoxNumber(5,[[${goods.boxSize}]])">5</button>
+						<button type="button" th:onclick="addBoxNumber(10,[[${goods.boxSize}]])">10</button>
+					</td>
+				</tr>
+				<tr>
+					<td align="center">
+						数量</td><td><input id="number" type="text" name="number" required="required" autocomplete="off" class="input" onkeyup="goodsPrice(this)">
+				</td>
+					<td>
+						<button type="button" onclick="addNumber(1)">1</button>
+						<button type="button" onclick="addNumber(5)">5</button>
+						<button type="button" onclick="addNumber(10)">10</button>
+					</td>
+				</tr>
+				<tr>
+					<td align="center">
+						总价</td><td><input id="totalPrice" type="text" name="totalPrice" required="required" lay-verify="required|number" autocomplete="off" class="input"  onkeyup="value=value.replace(/[^\0-9\.]/g,'')" onpaste="value=value.replace(/[^\0-9\.]/g,'')" oncontextmenu = "value=value.replace(/[^\0-9\.]/g,'')">
+				</td>
+				</tr>
+				<tr>
+					<td>
+					</td>
+					<td align="center">
+<!--						<button class="button" type="submit" th:onclick="refreshParent([[${orderId}]])" >立即提交</button>-->
+						<button class="button" type="reset" >重置</button>
+						<button class="button" th:onclick="test([[${goods.id}]],[[${orderId}]])">提交</button>
+					</td>
+				</tr>
+			</table>
+		</form>
+	</div>
+	<script src="js/jquery.min.js"></script>
+	<script>
+		function goodsNumber(aaa,boxSize) {
+			var price=document.getElementById("price").value;
+			if(/\D/.test(aaa.value)) {
+				alert('件数只能输入数字');
+				aaa.value='';
+			}
+			else{
+				var bbb=aaa.value*boxSize;
+				var ccc=bbb*price;
+				ccc=ccc.toFixed(2);
+				document.getElementById("number").value=bbb;
+				document.getElementById("totalPrice").value=ccc;
+			}
+		}
+		function inputPrice(aaa) {
+			var number=document.getElementById("number").value;
+			aaa.value=aaa.value.replace(/[^\0-9\.]/g,'')
+			var bbb=aaa.value*number;
+			bbb=bbb.toFixed(2);
+			document.getElementById("totalPrice").value=bbb;
+		}
+		function goodsPrice(aaa) {
+			var price=document.getElementById("price").value;
+			aaa.value=aaa.value.replace(/[^\0-9\.]/g,'')
+				var bbb=aaa.value*price;
+				bbb=bbb.toFixed(2);
+				document.getElementById("totalPrice").value=bbb;
+
+		}
+		function refreshParent(orderId) {
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);//关闭弹出层
+			parent.location.href="reLoad?orderId="+orderId;
+		}
+
+		function test(goodsId,orderId) {
+			var price=document.getElementById("price").value;
+			var number=document.getElementById("number").value;
+			var boxNumber=document.getElementById("boxNumber").value;
+			var totalPrice=document.getElementById("totalPrice").value;
+			$.ajax({
+				type:"post",
+				url:"addOrderGoods?goodsId="+goodsId+"&number="+number+"&orderId="+orderId+"&boxNumber="+boxNumber+"&price="+price+"&totalPrice="+totalPrice,
+				data:{},
+				async: false,
+				success:function(a) {
+					console.log("刷新");
+					var index = parent.layer.getFrameIndex(window.name);
+					parent.layer.close(index);//关闭弹出层
+					parent.location.href="reLoad?orderId="+orderId;
+
+				}
+			});
+
+		}
+		function savePrice(goodsId) {
+			var price=document.getElementById("price").value;
+			console.log(price)
+			$.ajax({
+				type:"post",
+				url:"savePrice?goodsId="+goodsId+"&price="+price,
+				data:{},
+				async: false,
+				success:function(a) {
+						alert("价格保存成功")
+
+
+				}
+			});
+		}
+		function changePrice(i) {
+			var price=document.getElementById("price").value;
+			var number=document.getElementById("number").value;
+			if (i==1){
+				price=Number(price)+Number(0.1);
+			}else {
+				price=Number(price)-Number(0.1);
+			}
+			price=price.toFixed(2);
+			var total=price*number;
+			total=total.toFixed(2);
+			document.getElementById("price").value=price;
+			document.getElementById("totalPrice").value=total;
+		}
+		function addBoxNumber(a,boxSize) {
+			var price=document.getElementById("price").value;
+			var boxNumber=document.getElementById("boxNumber").value;
+			boxNumber=Number(boxNumber)+Number(a);
+			document.getElementById("boxNumber").value=boxNumber;
+			var number=boxNumber*boxSize;
+			var ccc=number*price;
+			ccc=ccc.toFixed(2);
+			document.getElementById("number").value=number;
+			document.getElementById("totalPrice").value=ccc;
+		}
+		function addNumber(num) {
+			var price=document.getElementById("price").value;
+			var number=document.getElementById("number").value;
+			number=Number(number)+Number(num);
+			document.getElementById("number").value=number;
+			var total=number*price;
+			total=total.toFixed(2)
+			document.getElementById("totalPrice").value=total;
+		}
+
+	</script>
+	</body>
+
+</html>

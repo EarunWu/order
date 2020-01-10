@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>earun</title>
+
+
+    <style>
+        .button { /* 按钮美化 */
+
+            width: 80px; /* 宽度 */
+            height: 40px;
+            border-width: 0px; /* 边框宽度 */
+            border-radius: 10px; /* 边框半径 */
+            background: #1E90FF; /* 背景颜色 */
+            cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+            outline: none; /* 不显示轮廓线 */
+            font-family: Microsoft YaHei; /* 设置字体 */
+            color: white; /* 字体颜色 */
+            font-size: 17px;
+
+        }
+        .button:hover { /* 鼠标移入按钮范围时改变颜色 */
+            background: #5599FF;
+        }
+        .input{
+            border: 1px solid #ccc;
+            height: 30px; /* 高度 */
+            width: 400px;
+            border-radius: 10px;
+            padding-left:5px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+        }
+        .input:focus{
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+        }
+    </style>
+
+</head>
+
+<body>
+<div class="cBody">
+    <form id="addForm" th:action="@{/updateGoodsInfo(goodsId=${goods.id})}" method="post">
+        <table style="text-align: center">
+            <tr>
+                <td>
+                    商品名</td><td><input th:value="${goods.name}" type="text" id="txtChinese" name="name" required="required"  autocomplete="off" class="input" onkeyup="query()">
+            </td>
+            </tr>
+            <tr>
+                <td>
+                    商品名缩写</td><td><input th:value="${goods.easyWrite}" type="text" name="easy_write" required="required" lay-verify="required" autocomplete="off" class="input">
+            </td>
+            </tr>
+            <tr>
+                <td>
+                    单位</td><td><input th:value="${goods.unit}" type="text" name="unit" required="required" lay-verify="required" autocomplete="off" class="input">
+            </td>
+            </tr>
+            <tr>
+                <td>
+                    规格</td><td><input th:value="${goods.boxSize}" type="text" name="box_size" required="required" lay-verify="required|number" autocomplete="off" class="input" onkeyup="value=value.replace(/[^\0-9\.]/g,'')" onpaste="value=value.replace(/[^\0-9\.]/g,'')" oncontextmenu = "value=value.replace(/[^\0-9\.]/g,'')">
+            </td>
+            </tr>
+            <tr>
+                <td>
+                    价格</td><td><input th:value="${goods.price}" type="text" name="price" required="required" lay-verify="required|number" autocomplete="off" class="input" onkeyup="value=value.replace(/[^\0-9\.]/g,'')" onpaste="value=value.replace(/[^\0-9\.]/g,'')" oncontextmenu = "value=value.replace(/[^\0-9\.]/g,'')">
+            </td>
+            </tr>
+            					<tr>
+            						<td>
+            					排位权重</td><td><input th:value="${goods.stock}" type="text" name="stock" required="required" autocomplete="off" class="input" onkeyup="if(/\D/.test(this.value)){alert('库存只能输入数字');this.value='';}">
+            						</td>
+            					</tr>
+            <tr>
+                <td>
+                </td>
+                <td>
+                    <button class="button" type="submit">立即提交</button>
+                    <button class="button" type="reset" >重置</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
+</body>
+
+</html>

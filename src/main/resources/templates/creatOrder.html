@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>创建订单</title>
+    <link rel="stylesheet" type="text/css" href="css/base.css">
+    <link rel="stylesheet" type="text/css" href="css/iconfont.css">
+    <script type="text/javascript" src="framework/jquery-1.11.3.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="layui/css/layui.css">
+    <script type="text/javascript" src="layui/layui.js"></script>
+    <!-- 滚动条插件 -->
+    <link rel="stylesheet" type="text/css" href="css/jquery.mCustomScrollbar.css">
+    <script src="framework/jquery-ui-1.10.4.min.js"></script>
+    <script src="framework/jquery.mousewheel.min.js"></script>
+    <script src="framework/jquery.mCustomScrollbar.min.js"></script>
+    <script src="framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+    <!-- 公共样式 结束 -->
+
+    <style>
+        .searchResult{
+            position: absolute;
+            top: 50px;
+            left: 15px;
+            z-index: 10;
+            background-color: #FFF;
+            width: 100px;
+            border: 1px solid #d2d2d2;
+            border-radius: 2px;
+        }
+        .searchResult li{
+            padding: 0 10px;
+            line-height: 36px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+        .searchResult li:hover{
+            background-color: #eee;
+        }
+        .button { /* 按钮美化 */
+
+            width: 80px; /* 宽度 */
+            height: 40px;
+            border-width: 0px; /* 边框宽度 */
+            border-radius: 10px; /* 边框半径 */
+            background: #1E90FF; /* 背景颜色 */
+            cursor: pointer; /* 鼠标移入按钮范围时出现手势 */
+            outline: none; /* 不显示轮廓线 */
+            font-family: Microsoft YaHei; /* 设置字体 */
+            color: white; /* 字体颜色 */
+            font-size: 17px;
+
+        }
+        .button:hover { /* 鼠标移入按钮范围时改变颜色 */
+            background: #5599FF;
+        }
+        .input{
+            border: 1px solid #ccc;
+            height: 30px; /* 高度 */
+            width: 300px;
+            border-radius: 10px;
+            padding-left:5px;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s
+        }
+        .input:focus{
+            border-color: #66afe9;
+            outline: 0;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6)
+        }
+    </style>
+</head>
+<body>
+<form action="searchCustomer">
+    <table style="text-align: center;float:left; width:300px;">
+        <tr>
+            <td>搜索顾客</td><td></td>
+        </tr>
+        <tr>
+            <td><input type="text" name="easyWrite" required="required" lay-verify="required" autocomplete="off" class="input">
+        </td>
+            <td>
+                <button class="button" type="submit">搜索</button>
+            </td>
+        </tr>
+    </table>
+</form>
+    <table id="customList1" class="layui-table">
+        <thead>
+        <tr>
+            <th>序号</th>
+            <th>顾客编号</th>
+            <th>顾客名</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="customerList:${customerList}">
+            <td><span th:text="${customerListStat.index+1}"></span></td>
+            <td><span th:text="${customerList.id}"></span></td>
+            <td><span th:text="${customerList.name}"></span></td>
+            <td>
+                <a class="layui-btn layui-btn-xs" th:href="@{/addOrder(customer=${customerList.name})}">创建订单</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</form>
+</body>
+</html>
